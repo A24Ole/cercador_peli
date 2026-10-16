@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 import Vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 
 export default defineConfig({
+  base: "./",
   plugins: [
     Vue({
       template: { transformAssetUrls },
@@ -14,6 +15,10 @@ export default defineConfig({
     alias: {
       "@": fileURLToPath(new URL("src", import.meta.url)),
     },
+  },
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
   },
   server: {
     port: 3000,

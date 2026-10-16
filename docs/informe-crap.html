@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8" />
+<title>AEA1.2 – Anàlisi i Refactorització de Disseny (C.R.A.P.)</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Roboto, Arial, sans-serif; font-size: 10.5pt; line-height: 1.5; color: #1d1d1f; margin: 0; }
+  h1, h2, h3 { line-height: 1.2; margin: 0; }
+  h2 { font-size: 16pt; color: #C62828; margin: 22pt 0 8pt; padding-bottom: 4pt; border-bottom: 2px solid #C62828; break-after: avoid; }
+  h3 { font-size: 12pt; margin: 14pt 0 6pt; break-after: avoid; }
+  p { margin: 0 0 7pt; }
+  ul { margin: 0 0 8pt; padding-left: 16pt; }
+  li { margin-bottom: 3pt; }
+  code { font-family: Consolas, monospace; font-size: 9pt; background: #f2f2f2; padding: 0 3px; border-radius: 3px; }
+  pre { font-family: Consolas, monospace; font-size: 8.5pt; background: #f5f5f5; border-left: 3px solid #C62828; padding: 7pt 9pt; margin: 6pt 0 10pt; white-space: pre-wrap; break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 6pt 0 12pt; font-size: 9.5pt; break-inside: avoid; }
+  th, td { border: 1px solid #d0d0d0; padding: 5pt 7pt; text-align: left; vertical-align: top; }
+  th { background: #C62828; color: #fff; }
+  tr:nth-child(even) td { background: #fafafa; }
+  figure { margin: 8pt 0 14pt; break-inside: avoid; text-align: center; }
+  figure img { max-width: 100%; border: 1px solid #ccc; }
+  figcaption { font-size: 9pt; color: #666; margin-top: 4pt; }
+  .duo { display: flex; gap: 10pt; align-items: flex-start; }
+  .duo figure { flex: 1; }
+  .letter { display: inline-block; width: 22pt; height: 22pt; line-height: 22pt; text-align: center; background: #C62828; color: #fff; border-radius: 4pt; font-weight: 700; margin-right: 6pt; }
+  .note { background: #fdecea; border-left: 3px solid #C62828; padding: 7pt 9pt; margin: 8pt 0 12pt; break-inside: avoid; }
+  .page-break { break-before: page; }
+
+  .cover { height: 255mm; display: flex; flex-direction: column; justify-content: center; }
+  .cover .tag { color: #C62828; font-weight: 700; letter-spacing: 1px; font-size: 11pt; margin-bottom: 10pt; }
+  .cover h1 { font-size: 30pt; margin-bottom: 10pt; }
+  .cover .sub { font-size: 14pt; color: #555; margin-bottom: 36pt; }
+  .cover .crap { display: flex; gap: 8pt; margin-bottom: 40pt; }
+  .cover .crap div { flex: 1; border: 2px solid #C62828; border-radius: 6pt; padding: 10pt; }
+  .cover .crap b { display: block; font-size: 22pt; color: #C62828; }
+  .cover .meta { font-size: 11pt; color: #444; border-top: 1px solid #ddd; padding-top: 10pt; }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<section class="cover">
+  <div class="tag">AEA1.2 · 2n DAM</div>
+  <h1>Anàlisi i Refactorització de Disseny</h1>
+  <div class="sub">Aplicació dels principis C.R.A.P. al Cercador de pel·lícules (Vue 3 + Vuetify)</div>
+  <div class="crap">
+    <div><b>C</b>Contrast</div>
+    <div><b>R</b>Repetició</div>
+    <div><b>A</b>Alineació</div>
+    <div><b>P</b>Proximitat</div>
+  </div>
+  <div class="meta">
+    Projecte: Cercador de pel·lícules<br />
+    Repositori: github.com/A24Ole/cercador_peli<br />
+    Data: 16 d'octubre de 2026
+  </div>
+</section>
+
+<!-- 1 -->
+<h2 class="page-break">1. Introducció i objectiu</h2>
+<p>
+  L'objectiu d'aquesta activitat és analitzar la interfície del <b>Cercador de pel·lícules</b>, detectar-ne els
+  problemes de disseny visual i refactoritzar-la aplicant els quatre principis <b>C.R.A.P.</b>: Contrast, Repetició,
+  Alineació i Proximitat.
+</p>
+<p>
+  L'aplicació és una web feta amb Vue 3 i Vuetify que consulta l'API pública
+  <code>https://devsapihub.com/api-movies</code> (30 pel·lícules) i permet cercar-les per títol, gènere o any.
+  Tota la comunicació amb l'API està centralitzada al fitxer <code>communicationManager.js</code>, de manera que la
+  refactorització només ha afectat la capa visual.
+</p>
+
+<h3>1.1 Per què el mètode C.R.A.P.?</h3>
+<p>
+  C.R.A.P. és un mètode proposat per Robin Williams a <i>The Non-Designer's Design Book</i>, pensat precisament per a
+  persones que no són dissenyadores però han de construir interfícies. L'he triat per aquests motius:
+</p>
+<ul>
+  <li><b>És concret i verificable.</b> Cada principi es pot comprovar mirant la pantalla: hi ha un element que destaca?
+    els elements iguals es veuen iguals? tot comparteix les mateixes vores? el que va junt està junt? Això el fa ideal
+    per a una auditoria.</li>
+  <li><b>Ataca els problemes que realment tenia la web.</b> La versió inicial era funcional però plana: tot tenia el
+    mateix pes visual, la informació estava barrejada i no hi havia cap punt d'atenció clar.</li>
+  <li><b>Encaixa amb Vuetify.</b> Vuetify ja està construït sobre Material Design, que aplica aquests mateixos principis.
+    Això ha permès aplicar C.R.A.P. només amb components i classes d'utilitat (<code>mb-8</code>, <code>ga-1</code>,
+    <code>text-medium-emphasis</code>…) <b>sense escriure ni una línia de CSS propi</b>, mantenint el projecte simple.</li>
+  <li><b>Els principis es reforcen entre ells.</b> Una graella alineada facilita la repetició; la proximitat crea grups
+    que després es poden diferenciar amb contrast. Millorar-ne un ajuda a millorar els altres.</li>
+  <li><b>No depèn del gust personal.</b> Les decisions es justifiquen amb un principi, no amb un “m'agrada més així”.</li>
+</ul>
+
+<!-- 2 -->
+<h2>2. Anàlisi de l'estat inicial</h2>
+<figure>
+  <img src="img/abans.png" style="max-height: 120mm;" />
+  <figcaption>Figura 1. Versió inicial del cercador (abans de la refactorització).</figcaption>
+</figure>
+
+<p>Revisant la interfície principi per principi es van detectar aquests problemes:</p>
+<table>
+  <tr><th style="width: 18%;">Principi</th><th>Problema detectat</th></tr>
+  <tr><td><b>Contrast</b></td><td>
+    No hi havia cap color d'accent: tot era blanc i gris. El botó “Más info” tenia el mateix aspecte que el text i no
+    semblava una acció. No hi havia capçalera, i el títol de la pàgina competia amb els títols de les targetes.
+  </td></tr>
+  <tr><td><b>Repetició</b></td><td>
+    Idioma barrejat: el títol en català i el cercador, els botons i els missatges en castellà. Els gèneres eren text
+    pla separat per comes, sense cap format comú. Les imatges es retallaven a una alçada fixa i cada pòster es veia
+    diferent.
+  </td></tr>
+  <tr><td><b>Alineació</b></td><td>
+    El botó de cada targeta quedava just després del contingut; si una targeta tenia més text, els botons de la
+    mateixa fila quedaven a alçades diferents. Els títols llargs es tallaven sense manera de veure'ls sencers.
+  </td></tr>
+  <tr><td><b>Proximitat</b></td><td>
+    L'any i els gèneres estaven en una sola línia, barrejant dos tipus d'informació. Les estrelles i el botó estaven
+    en línies separades sense relació entre ells. No hi havia separació clara entre la zona de cerca i els resultats,
+    ni cap indicació de quants resultats hi havia.
+  </td></tr>
+  <tr><td><b>Quantitat</b></td><td>
+    Es mostraven les 30 pel·lícules alhora en un desplaçament molt llarg, amb 30 pòsters carregant-se de cop.
+  </td></tr>
+</table>
+
+<!-- 3 -->
+<h2 class="page-break">3. Refactorització aplicant C.R.A.P.</h2>
+
+<h3><span class="letter">C</span>Contrast</h3>
+<p>
+  <i>Si dos elements no són iguals, han de ser clarament diferents.</i> El contrast serveix per marcar la jerarquia i
+  guiar l'ull cap al que és important.
+</p>
+<ul>
+  <li><b>Color d'accent únic:</b> s'ha definit un vermell “de cinema” com a color <code>primary</code> del tema. Només
+    s'utilitza a la capçalera, als botons “Més info” i a la paginació, de manera que el color sempre vol dir
+    “això és important o interactiu”.</li>
+  <li><b>Capçalera (app bar):</b> una barra superior de color separa clarament la identitat de l'aplicació del
+    contingut.</li>
+  <li><b>Jerarquia tipogràfica:</b> títol de pàgina gran (<code>text-h4</code>, negreta) → títol de targeta en negreta →
+    any i text secundari amb <code>text-medium-emphasis</code> (gris). Ara es distingeixen tres nivells clars.</li>
+  <li><b>Estrelles en ambre</b> i valor numèric al costat: la valoració es llegeix d'un cop d'ull.</li>
+  <li><b>Mode clar i fosc:</b> el tema segueix la preferència del sistema i el color primari té una variant per a cada
+    mode perquè el contrast es mantingui (<code>#C62828</code> en clar, <code>#EF5350</code> en fosc).</li>
+</ul>
+<pre>// src/plugins/vuetify.js
+theme: {
+  defaultTheme: "system",
+  themes: {
+    light: { colors: { primary: "#C62828" } },
+    dark:  { colors: { primary: "#EF5350" } },
+  },
+},</pre>
+
+<h3><span class="letter">R</span>Repetició</h3>
+<p>
+  <i>Repetir els mateixos elements visuals a tot el disseny crea coherència i fa que l'usuari aprengui la interfície
+  ràpidament.</i>
+</p>
+<ul>
+  <li><b>Un sol component de targeta</b> (<code>MovieCard.vue</code>) per a totes les pel·lícules: sempre el mateix ordre
+    (pòster → títol → any → gèneres → valoració + botó).</li>
+  <li><b>Gèneres com a xips</b> (<code>v-chip</code>) iguals a totes les targetes, en comptes de text pla.</li>
+  <li><b>Pòsters amb la mateixa proporció 2:3</b> (<code>:aspect-ratio="2 / 3"</code>), que és la proporció real d'un
+    pòster de cinema: es veuen sencers i tots iguals.</li>
+  <li><b>Un mateix estil de botó</b> (<code>variant="tonal"</code>, color primari) per a totes les accions.</li>
+  <li><b>Idioma unificat en català</b> a tota la interfície (títol, cercador, botons, missatges i
+    <code>lang="ca"</code> a l'HTML).</li>
+  <li><b>Escala d'espaiat consistent</b> de Vuetify (múltiples de 4 px) en lloc de valors arbitraris.</li>
+</ul>
+
+<h3><span class="letter">A</span>Alineació</h3>
+<p>
+  <i>Res no s'ha de col·locar a l'atzar: cada element ha de tenir una connexió visual amb un altre element de la
+  pàgina.</i>
+</p>
+<ul>
+  <li><b>Una única vora esquerra:</b> la capçalera, el títol, el cercador, el comptador i la graella estan dins del
+    mateix <code>v-container</code>, de manera que tots comencen a la mateixa línia vertical.</li>
+  <li><b>Graella de 12 columnes</b> (<code>v-row</code>/<code>v-col</code>): 3 columnes en escriptori, 2 en tauleta i
+    1 en mòbil, sempre amb el mateix espai entre targetes.</li>
+  <li><b>Botons alineats a la base:</b> la targeta és una columna flex (<code>d-flex flex-column</code>) i la zona
+    d'accions té <code>mt-auto</code>, així totes les valoracions i botons d'una fila queden a la mateixa altura encara
+    que el contingut sigui diferent.</li>
+  <li><b>Títols d'una línia</b> amb punts suspensius i el títol complet com a <i>tooltip</i>
+    (<code>:title="movie.title"</code>), perquè totes les targetes tinguin la mateixa estructura vertical.</li>
+  <li><b>Paginació centrada</b> sota la graella, alineada amb l'eix central del contingut.</li>
+</ul>
+<pre>&lt;v-card border class="h-100 d-flex flex-column" flat&gt;
+  ...
+  &lt;v-card-actions class="mt-auto px-4"&gt;   &lt;!-- sempre a la base --&gt;</pre>
+
+<h3><span class="letter">P</span>Proximitat</h3>
+<p>
+  <i>Els elements relacionats s'han d'agrupar; els que no tenen relació s'han de separar.</i> La distància és la manera
+  més simple de dir “això va junt”.
+</p>
+<ul>
+  <li><b>Bloc de cerca agrupat:</b> títol, subtítol explicatiu, camp de cerca i comptador de resultats formen una
+    secció (<code>&lt;section class="mb-8"&gt;</code>) separada de la graella amb un espai gran.</li>
+  <li><b>Comptador just sota el cercador</b> (“30 resultats”): és la resposta directa al que s'ha escrit, i per això
+    va enganxat al camp.</li>
+  <li><b>Títol + any junts</b> a la mateixa zona (<code>v-card-item</code>) i <b>gèneres separats</b> en una fila pròpia:
+    ja no es barregen dos tipus d'informació en una sola línia.</li>
+  <li><b>Valoració + botó a la mateixa fila</b> de la base: és la zona “de decisió” de la targeta.</li>
+  <li><b>La descripció es desplega dins la mateixa targeta</b>, separada amb un divisor, de manera que queda clar a quina
+    pel·lícula pertany.</li>
+</ul>
+
+<!-- 4 -->
+<h2>4. Reducció de pel·lícules visibles: 9 per pàgina</h2>
+<p>
+  A més dels quatre principis, s'ha reduït el nombre de pel·lícules visibles a <b>9 per pàgina</b> (una graella de 3×3
+  en escriptori) amb un component de paginació (<code>v-pagination</code>).
+</p>
+<ul>
+  <li><b>Menys càrrega cognitiva:</b> segons la llei de Hick, com més opcions es mostren alhora, més temps es triga a
+    decidir. 9 targetes es poden escanejar d'un cop d'ull; 30 no.</li>
+  <li><b>Reforça l'alineació:</b> 9 és múltiple de 3, de manera que la graella en escriptori sempre queda completa i
+    quadrada, sense files a mitges.</li>
+  <li><b>Rendiment:</b> només es carreguen 9 pòsters a la vegada en lloc de 30.</li>
+  <li><b>La cerca continua funcionant sobre totes les pel·lícules:</b> el filtratge es fa sobre les 30 i la paginació
+    només limita què es mostra. En fer una cerca nova es torna a la pàgina 1.</li>
+</ul>
+<pre>const PER_PAGE = 9;
+const pageCount  = computed(() =&gt; Math.ceil(movies.value.length / PER_PAGE));
+const pageMovies = computed(() =&gt; {
+  const start = (page.value - 1) * PER_PAGE;
+  return movies.value.slice(start, start + PER_PAGE);
+});</pre>
+
+<!-- 5 -->
+<h2>5. Resultat</h2>
+<figure>
+  <img src="img/despres.png" style="max-height: 118mm;" />
+  <figcaption>Figura 2. Versió refactoritzada en mode fosc.</figcaption>
+</figure>
+<figure>
+  <img src="img/despres-clar.png" style="max-height: 95mm;" />
+  <figcaption>Figura 3. Versió refactoritzada en mode clar: el color d'accent manté el contrast.</figcaption>
+</figure>
+
+<div class="duo page-break">
+  <figure>
+    <img src="img/despres-complet.png" />
+    <figcaption>Figura 4. Pàgina completa: 9 pel·lícules en graella 3×3 i paginació.</figcaption>
+  </figure>
+  <figure style="flex: 0.55;">
+    <img src="img/despres-mobil.png" />
+    <figcaption>Figura 5. Vista mòbil: una columna, mateixa vora esquerra.</figcaption>
+  </figure>
+</div>
+
+<!-- 6 -->
+<h2 class="page-break">6. Resum abans / després</h2>
+<table>
+  <tr><th style="width: 16%;">Principi</th><th style="width: 42%;">Abans</th><th>Després</th></tr>
+  <tr><td><b>Contrast</b></td>
+    <td>Tot blanc i gris, sense capçalera, botó poc visible.</td>
+    <td>Color primari únic per a accions, capçalera de color, tres nivells tipogràfics, estrelles en ambre.</td></tr>
+  <tr><td><b>Repetició</b></td>
+    <td>Idioma barrejat, gèneres en text pla, pòsters retallats de manera diferent.</td>
+    <td>Tot en català, gèneres com a xips, pòsters 2:3, mateix estil de botó a tot arreu.</td></tr>
+  <tr><td><b>Alineació</b></td>
+    <td>Botons a alçades diferents, sense capçalera alineada.</td>
+    <td>Una sola vora esquerra, graella 3/2/1 columnes, accions fixades a la base de la targeta.</td></tr>
+  <tr><td><b>Proximitat</b></td>
+    <td>Any i gèneres barrejats, valoració i botó separats, sense comptador.</td>
+    <td>Bloc de cerca + comptador agrupats, títol+any junts, gèneres a part, valoració+botó junts.</td></tr>
+  <tr><td><b>Quantitat</b></td>
+    <td>30 pel·lícules en un sol desplaçament.</td>
+    <td>9 per pàgina amb paginació; la cerca segueix filtrant les 30.</td></tr>
+</table>
+
+<h3>Fitxers modificats</h3>
+<ul>
+  <li><code>src/plugins/vuetify.js</code> – tema clar/fosc amb color primari.</li>
+  <li><code>src/App.vue</code> – capçalera amb icona i nom de l'aplicació.</li>
+  <li><code>src/pages/index.vue</code> – bloc de cerca, comptador, missatges en català i paginació de 9.</li>
+  <li><code>src/components/MovieCard.vue</code> – nova estructura de targeta (pòster 2:3, xips, accions a la base).</li>
+  <li><code>index.html</code> – <code>lang="ca"</code> i títol corregit.</li>
+</ul>
+
+<div class="note">
+  <b>Limitació:</b> els noms dels gèneres i les descripcions arriben de l'API en anglès. S'han mantingut tal com venen
+  per no falsejar les dades; la resta de la interfície està completament en català.
+</div>
+
+<!-- 7 -->
+<h2>7. Conclusió</h2>
+<p>
+  Sense canviar la funcionalitat ni afegir CSS propi, aplicar els quatre principis C.R.A.P. ha transformat una
+  interfície plana en una interfície amb jerarquia clara. Ara l'usuari sap on mirar (contrast), entén la interfície
+  després de veure una sola targeta (repetició), percep l'ordre de la graella (alineació) i identifica
+  immediatament quina informació va junta (proximitat).
+</p>
+<p>
+  La reducció a 9 pel·lícules per pàgina completa la millora: menys soroll, una graella sempre completa i una càrrega
+  més ràpida. C.R.A.P. ha demostrat ser un mètode útil per a desenvolupadors perquè converteix decisions de disseny
+  en criteris concrets i fàcils de justificar.
+</p>
+
+</body>
+</html>

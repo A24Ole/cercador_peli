@@ -44,4 +44,3 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           source: movie-search/dist/*
           strip_components: 2
-          target: ${{ secrets.SSH_TARGET_DIR }}

@@ -2,6 +2,8 @@
 
 A responsive single-page application for exploring a movie catalog. Users can search movies by title, genre or release year and browse the results in a paginated card grid showing each film's poster, genres, rating and synopsis. The interface adapts to desktop and mobile screens and follows the system's light or dark theme.
 
+**Live demo:** http://a24oleproyat.dam.inspedralbes.cat/movie-search/
+
 ## Tech stack
 
 - [Vue 3](https://vuejs.org/) (Composition API)
@@ -44,3 +46,15 @@ movie-search/
 ├── package.json
 └── vite.config.mjs
 ```
+
+## Deployment
+
+The app is deployed automatically with **GitHub Actions** ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)). On every push to `main` that changes the `movie-search/` folder, the workflow:
+
+1. Installs the dependencies with pnpm.
+2. Runs ESLint and creates the production build (`pnpm build`).
+3. Copies the generated `dist/` folder to the web server over SSH.
+
+The server credentials are never stored in the repository. They are provided as encrypted GitHub repository secrets (`SSH_HOST`, `SSH_USERNAME` and `SSH_PASSWORD`). The workflow can also be run manually from the **Actions** tab.
+
+Because the app uses relative asset paths and hash-based routing, the build works from any subfolder of a static web server without extra configuration.

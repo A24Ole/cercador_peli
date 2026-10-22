@@ -44,3 +44,4 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           source: movie-search/dist/*
           strip_components: 2
+          target: /home/a24oleproyat/web/a24oleproyat.dam.inspedralbes.cat/public_html/movie-search

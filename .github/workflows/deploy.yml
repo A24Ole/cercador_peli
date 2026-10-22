@@ -35,11 +35,13 @@ jobs:
       - run: pnpm lint
       - run: pnpm build
 
-      - name: Upload to server via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Upload to server via SSH
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: movie-search/dist/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: movie-search/dist/*
+          strip_components: 2
+          target: ${{ secrets.SSH_TARGET_DIR }}

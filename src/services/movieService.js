@@ -1,28 +1,14 @@
 const API_URL = "https://devsapihub.com/api-movies";
 
-async function request(url) {
-  const response = await fetch(url);
+export async function getMovies() {
+  const response = await fetch(API_URL);
   if (!response.ok) {
-    throw new Error(`Error HTTP: ${response.status}`);
+    throw new Error(`HTTP error: ${response.status}`);
   }
   return response.json();
 }
 
-export async function checkApiConnection() {
-  const response = await fetch(API_URL, { method: "HEAD" });
-  return response.ok;
-}
-
-export function getMovies() {
-  return request(API_URL);
-}
-
-export function getMovieById(id) {
-  return request(`${API_URL}/${id}`);
-}
-
-export async function searchMovies(text) {
-  const movies = await getMovies();
+export function filterMovies(movies, text) {
   const query = text.trim().toLowerCase();
   if (!query) {
     return movies;

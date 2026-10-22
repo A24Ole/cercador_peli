@@ -39,7 +39,7 @@
       <v-btn
         :append-icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
         color="primary"
-        :text="show ? 'Menys' : 'Més info'"
+        :text="show ? 'Less' : 'More info'"
         variant="tonal"
         @click="show = !show"
       />

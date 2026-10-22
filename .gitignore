@@ -33,5 +33,5 @@ coverage
 # OS
 Thumbs.db
 
-# Copies locals del repositori
-cercador_peli/
+# Local tooling
+.claude/

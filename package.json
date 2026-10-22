@@ -1,8 +1,9 @@
 {
-  "name": "cercador-pelicules",
+  "name": "movie-search-vuetify",
   "private": true,
   "type": "module",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "packageManager": "pnpm@12.4.1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

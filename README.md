@@ -54,7 +54,3 @@ The app is deployed automatically with **GitHub Actions** ([`.github/workflows/d
 1. Installs the dependencies with pnpm.
 2. Runs ESLint and creates the production build (`pnpm build`).
 3. Copies the generated `dist/` folder to the web server over SSH.
-
-The server credentials are never stored in the repository. They are provided as encrypted GitHub repository secrets (`SSH_HOST`, `SSH_USERNAME` and `SSH_PASSWORD`). The workflow can also be run manually from the **Actions** tab.
-
-Because the app uses relative asset paths and hash-based routing, the build works from any subfolder of a static web server without extra configuration.

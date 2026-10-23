@@ -2,7 +2,8 @@
 
 A responsive single-page application for exploring a movie catalog. Users can search movies by title, genre or release year and browse the results in a paginated card grid showing each film's poster, genres, rating and synopsis. The interface adapts to desktop and mobile screens and follows the system's light or dark theme.
 
-**Live demo:** http://a24oleproyat.dam.inspedralbes.cat/movie-search/
+**Live demo:** [http://a24oleproyat.dam.inspedralbes.cat/movie-search/](http://a24oleproyat.dam.inspedralbes.cat/movie-search/)  
+> **Note:** The live demo is hosted on an educational student server and may become unavailable in the future.
 
 ## Tech stack
 

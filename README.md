@@ -55,3 +55,6 @@ The app is deployed automatically with **GitHub Actions** ([`.github/workflows/d
 1. Installs the dependencies with pnpm.
 2. Runs ESLint and creates the production build (`pnpm build`).
 3. Copies the generated `dist/` folder to the web server over SSH.
+
+4. [@prochkoyatsko](https://github.com/prochkoyatsko) — Proyecto de DAM, Institut Pedralbes.
+
